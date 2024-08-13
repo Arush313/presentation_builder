@@ -1,0 +1,141 @@
+---
+title: "PPT_with_officer"
+author: "Arush Mohan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+## Setup
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(ggrepel)
+library(lubridate)
+library(readxl)
+library(officer)
+library(gt)
+
+# Reading in the data from an excel file
+data <- read_excel("data/DID_data_22-24.xlsx")
+
+# Ingesting the ppt template with ICS branding
+
+template_presentation <- read_pptx('input/template.pptx') 
+
+```
+
+
+
+## Data Wrangling
+```{r}
+
+# In this example, the data has already been cleaned and organised in a 'tidy' format. 
+
+
+# Modify the column names
+data <- data %>%
+  rename_all(~ tolower(gsub(" ", "_", .)))
+
+```
+
+
+## Building the PPT
+
+
+### SLIDE 1: Add a title slide
+
+
+```{r}
+
+Presentation <- template_presentation %>%
+  add_slide(layout = "No Image_Date/name multiple lines", master = "Presentation Title Slides") %>%
+  ph_with(my_pres, value = "Presentation Building Workshop", location = ph_location_type(type = "title"))
+```
+
+
+
+### SLIDE 2: Adding the context section slide
+
+
+```{r}
+
+# Adding a section title slide
+
+Presentation <- template_presentation %>%
+  add_slide(layout = "Style 1", master = "Section Slide") %>%
+  ph_with(my_pres, value = "Context", location = ph_location_label(ph_label = "Text Placeholder 6"))
+```
+
+
+### SLIDE 3: Adding Context
+
+```{r}
+# Adding th context slide with content
+
+Presentation <- template_presentation %>%
+  add_slide(layout = "One Column", master = "Content Slide White") %>%
+  ph_with(value = "Context", location = ph_location_label(ph_label = "Title 1")) %>% 
+  ph_with(value = block_list(
+  fpar(ftext("Introduction to officer", prop = fp_text(bold = TRUE))),
+  fpar(ftext("Creating Slides", prop = fp_text())),
+  fpar(ftext("Adding Content", prop = fp_text(italic = TRUE)))
+), location = ph_location_label(ph_label = "Content Placeholder 2"))
+
+```
+
+
+## Visualisations
+
+### SLIDE 4: Modalities
+
+
+```{r}
+
+plot <- ggplot(data, aes(x = modality)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Distribution of Modalities", x = "Modality", y = "Activity")
+
+
+```
+
+###
+
+```{r}
+
+summary_data <- data %>%
+  group_by(modality) %>%
+  summarize(avg_imd_rank = mean(as.numeric(imd_rank_decile), na.rm = TRUE))
+
+print(summary_data)
+
+```
+
+## Creating the ppt output
+
+
+```{r}
+
+Presentation %>%
+  print(target = paste0('output/PPT_workshop.pptx'))
+
+```
+
+
+## PPT Reference Layout
+
+```{r}
+
+
+layouts <- layout_summary(template_presentation)
+
+print_placeholders <- function(layout_name, master_name){
+  placeholders <- layout_properties(template_presentation, layout = layout_name, master = master_name)
+  print(paste("PLaceholders:", layout_name, master_name))
+  print(placeholders)
+}
+
+walk2(.x = layouts$layout, .y = layouts$master, ~print_placeholders(.x, .y))
+
+```

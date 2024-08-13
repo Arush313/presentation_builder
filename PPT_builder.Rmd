@@ -1,0 +1,42 @@
+---
+title: "PPT_builder"
+author: "Arush Mohan"
+date: "`r Sys.Date()`"
+output:
+  slidy_presentation: default
+  powerpoint_presentation: default
+  ioslides_presentation: default
+subtitle: Using RMarkdown
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+data <-datasets::cars
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Making Presentations With R
+
+- There are two ways: 
+      - directly rendering the rmd file
+      - using packages like "officer" to build more custom presentations
+- Exploring the first option
+
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
