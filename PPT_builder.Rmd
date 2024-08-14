@@ -4,8 +4,9 @@ author: "Arush Mohan"
 date: "`r Sys.Date()`"
 output:
   slidy_presentation: default
-  powerpoint_presentation: default
+  beamer_presentation: default
   ioslides_presentation: default
+  powerpoint_presentation: default
 subtitle: Using RMarkdown
 ---
 

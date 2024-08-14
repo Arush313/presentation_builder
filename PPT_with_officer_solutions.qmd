@@ -6,9 +6,8 @@ date: "`r Sys.Date()`"
 editor: visual
 ---
 
-
-
 ## Setup
+
 ```{r setup}
 
 #| include=FALSE
@@ -31,9 +30,8 @@ template_presentation <- read_pptx('input/template.pptx')
 
 ```
 
-
-
 ## Data Wrangling
+
 ```{r}
 
 # In this example, the data has already been cleaned and organised in a 'tidy' format. 
@@ -45,12 +43,9 @@ data <- data %>%
 
 ```
 
-
 ## Building the PPT
 
-
 ### SLIDE 1: Add a title slide
-
 
 ```{r}
 
@@ -59,11 +54,10 @@ Presentation <- template_presentation %>%
   ph_with(my_pres, value = "Presentation Building Workshop", location = ph_location_type(type = "title"))
 ```
 
-
-
 ### SLIDE 2: Adding the context section slide
 
 1
+
 ```{r}
 
 # Adding a section title slide
@@ -73,7 +67,6 @@ Presentation <- template_presentation %>%
   ph_with(my_pres, value = "Context", location = ph_location_label(ph_label = "Text Placeholder 6"))
 
 ```
-
 
 ### SLIDE 3: Adding Context
 
@@ -91,11 +84,9 @@ Presentation <- template_presentation %>%
 
 ```
 
-
 ## Visualisations
 
 ### SLIDE 4: Modalities
-
 
 ```{r}
 
@@ -128,7 +119,6 @@ summary_data <- data %>%
 
 ```
 
-
 ### MSK vs Non - MSK proportion
 
 ```{r}
@@ -146,8 +136,6 @@ Presentation <- Presentation %>%
   ph_with(value = plot, location = ph_location_label(ph_label = "Content Placeholder 2"))
 
 ```
-
-
 
 ### Boxplot imd rank deciles by modalites
 
@@ -167,7 +155,6 @@ Presentation <- Presentation %>%
   ph_with(value = "IMD Rank and MSK", location = ph_location_type(type = "title")) %>% 
   ph_with(value = plot, location = ph_location_label(ph_label = "Content Placeholder 2"))
 ```
-
 
 ### Average IMD Rank Decile by Modality and MSK Flag
 
@@ -209,9 +196,7 @@ Presentation <- Presentation %>%
 
 ```
 
-
 ### CCG Activity
-
 
 ```{r}
 # Total activity per CCG
@@ -237,9 +222,6 @@ Presentation <- Presentation %>%
   ph_with(value = c("This is an example of how you can text and graphs to the same slide."), location = ph_location_label(ph_label = "Content Placeholder 3"))
 
 ```
-
-
-
 
 ### Activity trend over time by modality - 2023-24
 
@@ -275,8 +257,7 @@ Presentation <- Presentation %>%
   
 ```
 
-
-### Focusing on a subset - 
+### Focusing on a subset -
 
 ```{r}
 # Filter data for people aged 60+, group by year and modality
@@ -306,8 +287,6 @@ gt_table |> gtsave("gt_table.png", expand = 10)
 
 ```
 
-
-
 ### Heatmaps with crosstabs
 
 ```{r}
@@ -335,9 +314,7 @@ plot <- ggplot(crosstab, aes(x = modality, y = msk_flag, fill = n)) +
 
 ```
 
-
 ## Creating the ppt output
-
 
 ```{r}
 
@@ -347,7 +324,6 @@ Presentation %>%
   print(target = paste0('output/PPT_workshop.pptx'))
 
 ```
-
 
 ## PPT Reference Layout
 
@@ -367,4 +343,3 @@ layout_properties(template_presentation, layout = "mod_layout_1", master = "Cont
 walk2(.x = layouts$layout, .y = layouts$master, ~print_placeholders(.x, .y))
 
 ```
-
