@@ -16,6 +16,7 @@ library(lubridate)
 library(readxl)
 library(officer)
 library(gt)
+library(NCLRtemplates)
 
 # Reading in the data from an excel file
 data <- read_excel("data/DID_data_22-24.xlsx")
@@ -98,8 +99,14 @@ Presentation <- template_presentation %>%
 
 plot <- ggplot(data, aes(x = modality)) +
   geom_bar(fill = "#005EB8") +
-  labs(title = "Distribution of Modalities", x = "Modality", y = "Activity")
+  labs(title = "Distribution of Modalities", x = "Modality", y = "Activity")+
+  theme_nclicb()
 
+# Add it to a slide
+Presentation <- Presentation %>%
+  add_slide(layout = "One Column", master = "Content Slide White")  %>%
+  ph_with(value = "Activity Distribution by modality", location = ph_location_type(type = "title")) %>% 
+  ph_with(value = plot, location = ph_location_label(ph_label = "Content Placeholder 2"))
 
 ```
 
@@ -125,7 +132,8 @@ summary_data <- data %>%
 
 plot<- ggplot(data, aes(x = msk_flag)) +
   geom_bar(aes(y = ..prop.., group = 1), fill = "#005EB8") +
-  labs(title = "Proportion of MSK vs Non-MSK Cases", x = "MSK Flag", y = "Proportion")
+  labs(title = "Proportion of MSK vs Non-MSK Cases", x = "MSK Flag", y = "Proportion") +
+  theme_nclicb()
 
 Presentation <- Presentation %>%
   add_slide(layout = "One Column", master = "Content Slide White")  %>%
@@ -144,7 +152,8 @@ Presentation <- Presentation %>%
 
 plot <- ggplot(data, aes(x = modality, y = as.numeric(imd_rank_decile))) +
   geom_boxplot(fill = "lightblue") +
-  labs(title = "IMD Rank Decile by Modality", x = "Modality", y = "IMD Rank Decile")
+  labs(title = "IMD Rank Decile by Modality", x = "Modality", y = "IMD Rank Decile")+
+  theme_nclicb()
 
 
 # Add it to the slide. Use a two column slide 
@@ -186,9 +195,12 @@ gt_table <- summary_table %>%
     avg_imd_rank = "Average IMD Rank Decile"
   )
 
+# Save the gt table as an image 
+gt_table |> gtsave("gt_table.png", expand = 10)
+
 # Add the table to the same slide as the previous one
 Presentation <- Presentation %>%
-  ph_with(value = plot, location = ph_location_label(ph_label = "Content Placeholder 3"))
+  ph_with(external_img("gt_table.png"), location = ph_location_label(ph_label = "Content Placeholder 3"))
 
 ```
 
@@ -201,7 +213,8 @@ Presentation <- Presentation %>%
 
 ggplot(data, aes(x = ccg_name)) +
   geom_bar(fill = "purple") +
-  labs(title = "Activity by CCG", x = "CCG Name", y = "Activity") +
+  labs(title = "Activity by CCG", x = "CCG Name", y = "Activity")+
+  theme_nclicb() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 # Add it to a slide. Also add some commentary
@@ -228,7 +241,8 @@ activity_over_time <- data %>%
 
 plot <- ggplot(activity_over_time, aes(x = month, y = activity_count, group = modality, color = modality)) +
   geom_smooth() +
-  geom_point() +
+  geom_point()+
+  theme_nclicb() +
   facet_wrap(~modality) + 
   labs(
     title = "Activity Over Time by Modality",
@@ -292,9 +306,10 @@ plot <- ggplot(crosstab, aes(x = modality, y = msk_flag, fill = n)) +
     y = "MSK Flag",
     fill = "Count"
   ) +
-  theme_minimal()
+  theme_nclicb()
 
 # Add it to a slide
+
 
 ```
 
@@ -324,6 +339,8 @@ print_placeholders <- function(layout_name, master_name){
   print(paste("PLaceholders:", layout_name, master_name))
   print(placeholders)
 }
+
+layout_properties(template_presentation, layout = "mod_layout_1", master = "Content Slide White")
 
 walk2(.x = layouts$layout, .y = layouts$master, ~print_placeholders(.x, .y))
 
