@@ -94,13 +94,13 @@ Presentation <- template_presentation %>%
 ```{r}
 
 plot <- ggplot(data, aes(x = modality)) +
-  geom_bar(fill = "steelblue") +
+  geom_bar(fill = "#005EB8") +
   labs(title = "Distribution of Modalities", x = "Modality", y = "Activity")
 
 
 ```
 
-###
+### Summary table
 
 ```{r}
 
@@ -109,6 +109,58 @@ summary_data <- data %>%
   summarize(avg_imd_rank = mean(as.numeric(imd_rank_decile), na.rm = TRUE))
 
 print(summary_data)
+
+```
+
+
+### MSK vs Non - MSK proportion
+
+```{r}
+
+# create a bar chart comparing the msk vs non- msk activity
+
+plot<- ggplot(data, aes(x = msk_flag)) +
+  geom_bar(aes(y = ..prop.., group = 1), fill = "#005EB8") +
+  labs(title = "Proportion of MSK vs Non-MSK Cases", x = "MSK Flag", y = "Proportion")
+
+print(plot)
+```
+
+
+
+### Boxplot imd rank deciles by modalites
+
+```{r}
+# Create summary table that shows the average IMD Rank Decile by Modality and MSK Flag - use gt to format the table 
+
+
+plot <- ggplot(data, aes(x = modality, y = as.numeric(imd_rank_decile))) +
+  geom_boxplot(fill = "lightgreen") +
+  labs(title = "IMD Rank Decile by Modality", x = "Modality", y = "IMD Rank Decile")
+
+print(plot)
+
+```
+
+
+### CCG Activity
+
+
+```{r}
+# total activity per CCG
+
+ggplot(data, aes(x = ccg_name)) +
+  geom_bar(fill = "purple") +
+  labs(title = "Activity by CCG", x = "CCG Name", y = "Activity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+
+###
+
+```{r}
+
 
 ```
 
