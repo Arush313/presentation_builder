@@ -1,0 +1,286 @@
+---
+title: "PPT_with_officer_ex"
+author: "Arush Mohan"
+format: html
+editor: visual
+---
+
+---
+title: "PPT_with_officer"
+author: "Arush Mohan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+## Setup
+```{r}
+#| include=FALSE
+
+
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(ggrepel)
+library(lubridate)
+library(readxl)
+library(officer)
+library(gt)
+
+# Reading in the data from an excel file
+data <- read_excel("data/DID_data_22-24.xlsx")
+
+# Ingesting the ppt template with ICS branding
+
+template_presentation <- read_pptx('input/template.pptx') 
+
+```
+
+
+## PPT Reference Layout
+
+```{r}
+
+
+layouts <- layout_summary(template_presentation)
+
+print_placeholders <- function(layout_name, master_name){
+  placeholders <- layout_properties(template_presentation, layout = layout_name, master = master_name)
+  print(paste("PLaceholders:", layout_name, master_name))
+  print(placeholders)
+}
+
+layout_properties(template_presentation, layout = "mod_layout_1", master = "Content Slide White")
+
+walk2(.x = layouts$layout, .y = layouts$master, ~print_placeholders(.x, .y))
+
+```
+
+
+## Data Wrangling
+```{r}
+
+# In this example, the data has already been cleaned and organised in a 'tidy' format. 
+
+
+# Modify the column names
+data <- data %>%
+  rename_all(~ tolower(gsub(" ", "_", .)))
+
+```
+
+
+## Building the PPT
+
+
+### SLIDE 1: Add a title slide
+
+
+```{r}
+
+Presentation <- template_presentation %>%
+  add_slide(layout = "No Image_Date/name multiple lines", master = "Presentation Title Slides") %>%
+  ph_with(my_pres, value = "Presentation Building Workshop", location = ph_location_type(type = "title"))
+```
+
+
+
+### SLIDE 2: Adding the context section slide
+
+
+```{r}
+
+# Adding a section title slide
+
+Presentation <- template_presentation %>%
+  add_slide(layout = "Style 1", master = "Section Slide") %>%
+  ph_with(my_pres, value = "Context", location = ph_location_label(ph_label = "Text Placeholder 6"))
+
+```
+
+
+### SLIDE 3: Adding Context
+
+```{r}
+# Adding the context slide with content
+
+Presentation <- template_presentation %>%
+  add_slide(layout = "One Column", master = "Content Slide White") %>%
+  ph_with(value = "Context", location = ph_location_label(ph_label = "Title 1")) %>% 
+  ph_with(value = block_list(
+  fpar(ftext("Introduction to officer", prop = fp_text(bold = TRUE))),
+  fpar(ftext("Creating Slides", prop = fp_text())),
+  fpar(ftext("Adding Content", prop = fp_text(italic = TRUE)))
+), location = ph_location_label(ph_label = "Content Placeholder 2"))
+
+```
+
+
+## Visualisations
+
+### SLIDE 4: Modalities
+
+
+```{r}
+
+# Make a column chart that shows activity distribution by modality
+
+
+plot <- ggplot(data, aes(x = modality)) +
+  geom_bar(fill = "#005EB8") +
+  labs(title = "Distribution of Modalities", x = "Modality", y = "Activity")+
+  theme_nclicb()
+
+# Add it to a slide
+Presentation <- Presentation %>%
+  add_slide(layout = "One Column", master = "Content Slide White")  %>%
+  ph_with(value = "Activity Distribution by modality", location = ph_location_type(type = "title")) %>% 
+  ph_with(value = plot, location = ph_location_label(ph_label = "Content Placeholder 2"))
+
+```
+
+### Summary table
+
+```{r}
+#| include=FALSE
+
+# create a summary table showing the average IMD by modality
+
+summary_data <- data %>%
+  group_by(modality) %>%
+  summarize(avg_imd_rank = mean(as.numeric(imd_rank_decile), na.rm = TRUE))
+
+
+```
+
+
+### MSK vs Non - MSK proportion
+
+```{r}
+
+# create a bar chart comparing the msk vs non- msk activity
+
+
+
+# Add it a slide
+
+```
+
+
+
+### Boxplot imd rank deciles by modalites
+
+```{r}
+# Create a boxplot showing the IMD rank by modality
+
+
+
+
+# Add it to the slide. Use a two column slide 
+
+
+```
+
+
+### Average IMD Rank Decile by Modality and MSK Flag
+
+```{r}
+# Create a summary table for avgerage IMD rank by modality and msk flag
+
+
+
+
+# Create a gt table using the summary table 
+
+
+# Save the gt table as an image 
+
+
+# Add the table to the same slide as the previous one
+
+
+```
+
+
+### CCG Activity
+
+
+```{r}
+# Total activity per CCG
+
+
+# Add it to a slide. Also add some commentary to the same slide
+
+
+```
+
+
+
+
+### Activity trend over time by modality - 2023-24
+
+```{r}
+
+# First, filter and aggregate the data by Year, Month, and Modality to count activities
+
+
+
+# Plot the line chart with the date on the x-axis. Hint: you will need to use facet_wrap here
+
+
+
+# Add the chart to a slide 
+
+  
+```
+
+
+### Focusing on a subset - 
+
+```{r}
+# Filter data for people aged 60+, group by year and modality
+
+
+# Create a summary table using gt
+
+
+
+# Save the table as an image
+
+
+# Add it to a slide
+
+```
+
+
+
+### Heatmaps with crosstabs
+
+```{r}
+
+#Aggregate the data by modality and msk_flag
+
+
+
+# Plot the heatmap
+
+
+
+# Add it to a slide
+
+```
+
+
+## Creating the ppt output
+
+
+```{r}
+
+# Create the presentation as an output
+
+Presentation %>%
+  print(target = paste0('output/PPT_workshop.pptx'))
+
+```
+
+
