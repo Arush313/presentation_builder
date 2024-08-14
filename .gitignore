@@ -165,3 +165,7 @@ cython_debug/
 
 # VS Code project files
 .vscode/
+
+#Exempt Files
+##ppt template
+!input/template.pptx
