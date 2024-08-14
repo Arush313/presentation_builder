@@ -211,7 +211,7 @@ Presentation <- Presentation %>%
 ```{r}
 # Total activity per CCG
 
-ggplot(data, aes(x = ccg_name)) +
+plot <- ggplot(data, aes(x = ccg_name)) +
   geom_bar(fill = "purple") +
   labs(title = "Activity by CCG", x = "CCG Name", y = "Activity")+
   theme_nclicb() +
@@ -219,6 +219,17 @@ ggplot(data, aes(x = ccg_name)) +
 
 # Add it to a slide. Also add some commentary
 
+Presentation <- Presentation %>%
+  add_slide(layout = "Image and Column Style 1", master = "Content Slide White")  %>%
+  ph_with(value = "Activity by CCG", location = ph_location_type(type = "title")) %>% 
+  ph_with(value = plot, location = ph_location_label(ph_label = "Picture Placeholder 14"))
+
+
+
+# Adding commentary
+
+Presentation <- Presentation %>%
+  ph_with(value = c("This is an example of how you can text and graphs to the same slide."), location = ph_location_label(ph_label = "Content Placeholder 3"))
 
 ```
 
@@ -273,14 +284,20 @@ filtered_data <- data %>%
 
 # Create a summary table
 
-gt(filtered_data) %>%
+gt_table <- gt(filtered_data) %>%
   tab_header(
     title = "Activity Summary for Ages 60+",
     subtitle = "Grouped by Year and Modality"
   )
 
 
+# save the table as an image
+gt_table |> gtsave("gt_table.png", expand = 10)
+
+
 # Add it to a slide
+
+
 
 ```
 

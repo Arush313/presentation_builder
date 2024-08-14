@@ -234,6 +234,8 @@ summary_data <- data %>%
 
 
 
+# Save the table as an image
+
 
 # Add it to a slide
 
