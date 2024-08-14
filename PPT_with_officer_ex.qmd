@@ -111,8 +111,7 @@ Presentation <- template_presentation %>%
 
 plot <- ggplot(data, aes(x = modality)) +
   geom_bar(fill = "#005EB8") +
-  labs(title = "Distribution of Modalities", x = "Modality", y = "Activity")+
-  theme_nclicb()
+  labs(title = "Distribution of Moprintdalities", x = "Modality", y = "Activity")
 
 # Add it to a slide
 Presentation <- Presentation %>%
@@ -130,7 +129,6 @@ Presentation <- Presentation %>%
 # create a summary table showing the average IMD by modality
 
 summary_data <- data %>%
-  group_by(modality) %>%
   summarize(avg_imd_rank = mean(as.numeric(imd_rank_decile), na.rm = TRUE))
 
 

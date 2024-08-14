@@ -3,10 +3,10 @@ title: "PPT_builder"
 author: "Arush Mohan"
 date: "`r Sys.Date()`"
 output:
-  slidy_presentation: default
+  powerpoint_presentation: default
   beamer_presentation: default
   ioslides_presentation: default
-  powerpoint_presentation: default
+  slidy_presentation: default
 subtitle: Using RMarkdown
 ---
 
