@@ -157,10 +157,38 @@ ggplot(data, aes(x = ccg_name)) +
 ```
 
 
-###
+### Average IMD Rank Decile by Modality and MSK Flag
 
 ```{r}
+# Create a summary table
 
+summary_table <- data %>%
+  group_by(modality, msk_flag) %>%
+  summarize(avg_imd_rank = mean(as.numeric(imd_rank_decile), na.rm = TRUE)) %>%
+  ungroup()
+
+# Create a gt table
+gt_table <- summary_table %>%
+  gt() %>%
+  tab_header(
+    title = "Average IMD Rank Decile by Modality and MSK Flag",
+    subtitle = "Data from 2022/23 to 2023/24"
+  ) %>%
+  tab_source_note(
+    source_note = "Source: Your Dataset"
+  ) %>%
+  fmt_number(
+    columns = vars(avg_imd_rank),
+    decimals = 2
+  ) %>%
+  cols_label(
+    modality = "Modality",
+    msk_flag = "MSK Flag",
+    avg_imd_rank = "Average IMD Rank Decile"
+  )
+
+# Display the gt table
+gt_table
 
 ```
 
